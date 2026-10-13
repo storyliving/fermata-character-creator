@@ -1,0 +1,458 @@
+{
+  "schema": "fermata.character-import-spec/1",
+  "version": "2026-10-12.1",
+  "updatedAt": "2026-10-12T18:00:00-07:00",
+  "banner": "This is the bundled copy of the import spec. Check https://build.lovebird.show/import/custom for the current rules.",
+  "upload": {
+    "site": "https://build.lovebird.show/import/custom",
+    "docs": "https://build.lovebird.show/docs/import/",
+    "gallery": "https://build.lovebird.show/gallery",
+    "accepts": [
+      ".glb",
+      ".fbx"
+    ],
+    "preferred": ".glb",
+    "maxBytes": 262144000,
+    "maxBytesLabel": "250 MB",
+    "flow": [
+      "On /import/custom type their name, choose one GLB or FBX ('Choose their body'), tick 'I made this character or have permission to use it.', press 'Begin the hatch'",
+      "Body check: read the face level (FULL / PARTIAL / CUSTOM) and the animation path",
+      "Personality, Voice, Movement, Review ('Does this feel like <name>?'), then Talk (the screen test)",
+      "On the Talk page press 'Save to My Gallery'",
+      "To enter the show press 'Send backstage' and confirm in the 'Send <name> backstage?' dialog (terms). One character per person; custom imports wait for reviewer approval before spawning",
+      "Before the boat sails, 'Leave the line' on the Backstage boat card takes the character out; do this before deleting it"
+    ],
+    "rightsRequired": "I made this character or have permission to use it."
+  },
+  "formats": {
+    "glb": {
+      "status": "preferred",
+      "gltfVersion": "2.0",
+      "compression": [
+        "KHR_draco_mesh_compression",
+        "EXT_meshopt_compression"
+      ],
+      "compressionNote": "The web preview decodes Draco and meshopt. Uncompressed is the safest choice; compress only to get under the size limit.",
+      "textures": "Embed textures in the GLB (PNG or JPEG). External texture files do not travel with a single-file upload."
+    },
+    "fbx": {
+      "status": "accepted",
+      "note": "FBX goes through the offline normalizer and never loads at runtime, so it cannot carry a blendshape face and the browser cannot preview inside it. Convert to GLB for anything with a face."
+    },
+    "vrm": {
+      "status": "convert",
+      "note": "The file picker does not accept .vrm. Convert to GLB in Blender (VRM add-on import, then glTF 2.0 export). VRM/VRoid bone names are recognised by the humanoid classifier; VRM expression and spring-bone extensions are not read."
+    },
+    "metahuman": {
+      "status": "use the custom door",
+      "note": "Export the low-poly body and face as ONE GLB on the MetaHuman skeleton with morph targets. /import/metahuman is DNA-only and nothing in the game reads DNA today."
+    },
+    "blenderExport": {
+      "menu": "File > Export > glTF 2.0 (.glb/.gltf)",
+      "format": "glTF Binary (.glb)",
+      "include": "Selected Objects or Visible Objects; include the armature",
+      "transform": "+Y Up on; apply all transforms (Ctrl+A > All Transforms) before export; 1 Blender unit = 1 metre",
+      "data": "Mesh: Apply Modifiers on, UVs on, Normals on; Material: Export; Images: Automatic or JPEG",
+      "shapeKeys": "Shape Keys on (names travel in mesh.extras.targetNames)",
+      "skinning": "Skinning on; Armature: Use Rest Position on",
+      "animation": "Animation on; Actions as NLA tracks or 'Actions' mode so each action becomes a named clip; Always Sample Animations on",
+      "compression": "Draco off unless you must get under 250 MB"
+    }
+  },
+  "limits": {
+    "maxUploadBytes": 262144000,
+    "skeletonsPerFile": 1,
+    "enforced": [
+      "file size 250 MB (HTTP 413 above it)",
+      "one skeleton per file",
+      "unsupported rigs must map one clip to Idle"
+    ],
+    "recommended": {
+      "phoneCrowdTriangles": [
+        4000,
+        8000
+      ],
+      "browserHeroTriangles": [
+        8000,
+        18000
+      ],
+      "warnAboveTriangles": 60000,
+      "maxTextureSize": 2048,
+      "phoneTextureSize": 1024,
+      "warnAboveTextures": 12,
+      "warnAboveMaterials": 8,
+      "note": "Triangle and texture numbers are budgets, not upload gates. The live show renders many characters at once on phones; heavy bodies slow everyone's stream."
+    }
+  },
+  "rig": {
+    "oneSkeleton": "Any number of skinned meshes may share one armature. Two unrelated skeletons in one file are refused.",
+    "supportedHumanoid": {
+      "rule": "Dictionary match of the 22 humanoid roles, every required role mapped, confidence >= 0.80",
+      "minConfidence": 0.8,
+      "roles": [
+        "pelvis",
+        "spine_lo",
+        "spine_mid",
+        "spine_hi",
+        "neck",
+        "head",
+        "clavicle_l",
+        "upperarm_l",
+        "lowerarm_l",
+        "hand_l",
+        "clavicle_r",
+        "upperarm_r",
+        "lowerarm_r",
+        "hand_r",
+        "thigh_l",
+        "calf_l",
+        "foot_l",
+        "toe_l",
+        "thigh_r",
+        "calf_r",
+        "foot_r",
+        "toe_r"
+      ],
+      "requiredRoles": [
+        "pelvis",
+        "head",
+        "upperarm_l",
+        "lowerarm_l",
+        "hand_l",
+        "upperarm_r",
+        "lowerarm_r",
+        "hand_r",
+        "thigh_l",
+        "calf_l",
+        "foot_l",
+        "thigh_r",
+        "calf_r",
+        "foot_r"
+      ],
+      "conventions": [
+        "metahuman/ue-mannequin",
+        "mixamo",
+        "vrm/vroid",
+        "cc/iclone",
+        "rigify",
+        "3dsmax-biped",
+        "unity-humanoid",
+        "mixamo-like (rpm/meshy/tripo)",
+        "generic"
+      ],
+      "onAccept": "No clip needed. Inherits every Love Bird body animation on its own proportions.",
+      "legLengthRatio": {
+        "clean": [
+          0.9,
+          1.3
+        ],
+        "usable": [
+          0.75,
+          1.3
+        ]
+      }
+    },
+    "metahumanBones": [
+      "root",
+      "pelvis",
+      "spine_01",
+      "spine_02",
+      "spine_03",
+      "spine_04",
+      "spine_05",
+      "neck_01",
+      "neck_02",
+      "head",
+      "clavicle_l",
+      "upperarm_l",
+      "lowerarm_l",
+      "hand_l",
+      "clavicle_r",
+      "upperarm_r",
+      "lowerarm_r",
+      "hand_r",
+      "thigh_l",
+      "calf_l",
+      "foot_l",
+      "ball_l",
+      "thigh_r",
+      "calf_r",
+      "foot_r",
+      "ball_r"
+    ],
+    "metahumanInGameCheck": "Same bone names and parents as the reference body, bone length within 5 percent, rest rotation within 5 degrees.",
+    "otherRigs": "Birds, creatures, vehicles, props and unrecognised humanoids must bring at least one clip and map it to Idle on the Movement page. Talk and emotions are optional. Name moving parts plainly: body, leg_1, wing_L, tail, wheel_1, eye_L, eyelid_upper_L, brow_L."
+  },
+  "blendshapes": {
+    "profile": "fermata-blendshape-face/1",
+    "matching": "Case-insensitive after normalisation: non-alphanumerics stripped, trailing _L/_R/.L/.R read as Left/Right, one leading arkit/blendshape/bs/shapekey prefix stripped.",
+    "blink": {
+      "required": [
+        "eyeBlinkLeft",
+        "eyeBlinkRight"
+      ],
+      "optional": [
+        "eyeSquintLeft",
+        "eyeSquintRight",
+        "eyeWideLeft",
+        "eyeWideRight"
+      ]
+    },
+    "mouth": {
+      "required": [
+        "jawOpen",
+        "mouthFunnel",
+        "mouthPucker",
+        "mouthClose"
+      ],
+      "recommended": [
+        "mouthSmileLeft",
+        "mouthSmileRight",
+        "mouthStretchLeft",
+        "mouthStretchRight",
+        "mouthRollLower",
+        "mouthRollUpper",
+        "mouthLowerDownLeft",
+        "mouthLowerDownRight",
+        "mouthUpperUpLeft",
+        "mouthUpperUpRight",
+        "mouthPressLeft",
+        "mouthPressRight"
+      ]
+    },
+    "emotion": {
+      "prefix": "EMO_",
+      "requiredCore": [
+        "EMO_Happy",
+        "EMO_Sad",
+        "EMO_Angry",
+        "EMO_Surprised",
+        "EMO_Affectionate",
+        "EMO_Anxious",
+        "EMO_Defensive",
+        "EMO_Domineering",
+        "EMO_Belligerent",
+        "EMO_Scornful",
+        "EMO_Repulsed",
+        "EMO_Silly",
+        "EMO_Validated",
+        "EMO_Whiny",
+        "EMO_Interested"
+      ],
+      "optional": [
+        "EMO_Ashamed",
+        "EMO_Awkward",
+        "EMO_Bored",
+        "EMO_Desperate",
+        "EMO_Drunk",
+        "EMO_Embarassed",
+        "EMO_Exhausted",
+        "EMO_Focused",
+        "EMO_Hopeless",
+        "EMO_Horny",
+        "EMO_Hungover",
+        "EMO_Insecure",
+        "EMO_Jealous",
+        "EMO_Lonely",
+        "EMO_Nostalgic",
+        "EMO_Proud",
+        "EMO_Resentful",
+        "EMO_Sick",
+        "EMO_Smug",
+        "EMO_Spiraling",
+        "EMO_Suspicious",
+        "EMO_Villainous"
+      ],
+      "aliases": {
+        "EMO_Embarrassed": "EMO_Embarassed"
+      },
+      "custom": "Any other EMO_ name (EMO_Love, EMO_Fear, EMO_Mischief) is kept as a custom emotion. Emotion names never block an upload."
+    },
+    "levels": {
+      "full": "every required blink, mouth and core emotion present",
+      "partial": "uploads with notes; a missing emotion shows a neutral face",
+      "none": "no face shapes; the body still uploads"
+    },
+    "visemes": "Viseme-named shapes (aa, oh, PP) can be pointed at ARKit channels in Advanced > Custom Visemes."
+  },
+  "animation": {
+    "emotionClipNaming": "<Emotion>_Idle and <Emotion>_Talking (also <Emotion>_Talk), for example Neutral_Idle, Neutral_Talking, Happy_Idle, Happy_Talking",
+    "baseClips": [
+      "Neutral_Idle",
+      "Neutral_Talking"
+    ],
+    "webEmotions": [
+      "neutral",
+      "happy",
+      "delighted",
+      "laughing",
+      "sad",
+      "angry",
+      "surprised",
+      "flirty",
+      "nervous",
+      "sassy",
+      "smug",
+      "disgusted"
+    ],
+    "roles": [
+      "idle",
+      "idle_alt",
+      "walk",
+      "run",
+      "turn",
+      "sit",
+      "emote_happy",
+      "emote_sad",
+      "emote_angry",
+      "emote_surprised",
+      "emote_afraid",
+      "emote_love",
+      "talk",
+      "listen",
+      "wave",
+      "drink",
+      "nod",
+      "shake_head",
+      "shrug",
+      "point",
+      "look_around",
+      "celebrate",
+      "dance",
+      "stretch",
+      "ruffle"
+    ],
+    "universalRoles": [
+      "idle",
+      "walk",
+      "sit",
+      "emote_happy",
+      "emote_sad",
+      "emote_angry",
+      "emote_surprised",
+      "talk",
+      "wave",
+      "drink"
+    ],
+    "customRoles": "custom.<slug> (lowercase letters, digits, underscore, up to 40)",
+    "rules": [
+      "Idle must not carry root motion",
+      "Walk must loop",
+      "Missing roles fall back to a related clip, then to procedural motion"
+    ]
+  },
+  "knownIssues": [
+    {
+      "id": "fbx-no-face",
+      "surface": "import",
+      "symptom": "Face shows no expressions after an FBX upload",
+      "workaround": "Re-export as GLB with Shape Keys on; FBX faces are not loaded at runtime",
+      "since": "2026-10-08"
+    },
+    {
+      "id": "delete-live-slot",
+      "surface": "gallery",
+      "symptom": "After deleting a character that was backstage, 'You already have a character on Love Bird Live' blocks sending another",
+      "workaround": "Use 'Leave the line' on the boat card BEFORE deleting. If already stuck, report a bug with surface 'backstage'",
+      "since": "2026-10-12"
+    },
+    {
+      "id": "rename-after-save",
+      "surface": "gallery",
+      "symptom": "Name field cannot be changed after the character is saved",
+      "workaround": "Names are fixed once created. Create a new character with the new name",
+      "since": "2026-10-12"
+    },
+    {
+      "id": "two-guest-browsers",
+      "surface": "backstage",
+      "symptom": "Signed out, a second browser counts as a different person",
+      "workaround": "Sign in before sending backstage so the one-character-per-person rule follows you",
+      "since": "2026-10-12"
+    }
+  ],
+  "hotfixes": [],
+  "bugReport": {
+    "url": "https://hq.fermata.me/api/public/bug-report",
+    "statusUrl": "https://hq.fermata.me/api/public/bug-report/{ticket}",
+    "surfaces": [
+      "import",
+      "gallery",
+      "backstage",
+      "boat",
+      "live",
+      "vote",
+      "skill",
+      "other"
+    ]
+  },
+  "rulesPendingRelease": {
+    "release": "universal-expressions",
+    "live": false,
+    "note": "Accepted once the universal-expressions release is live. Until live is true, author the canonical names in blendshapes/animation above. Fermata flips live:true in the live spec.",
+    "blendshapes": {
+      "canonical": "ARKit 52",
+      "alsoMapped": [
+        "MetaHuman CTRL_expressions_* (browRaiseInL, mouthCornerPullL/R, mouthCornerDepressL/R, eyeWidenL, noseWrinkleL, jawOpen, mouthLipsPurse*, mouthFunnel*)",
+        "Character Creator (Mouth_Smile_L, Brow_Raise_Inner_L, Eye_Squint_L)",
+        "VRM/VRoid (Fcl_ALL_Joy/Angry/Sorrow/Fun/Surprised as emotion shapes; Fcl_MTH_A/O; A/I/U/E/O; aa/oh/ou/ee/ih)",
+        "Oculus / Ready Player Me visemes viseme_*"
+      ],
+      "matching": "Ignores case, underscores and side suffixes (_L, .L, L, Left) and the prefixes arkit, blendShape1., bs, Wolf3D_Head., A01_, Genesis8 facs_bs_",
+      "unrecognised": "Kept as custom channels; never an error"
+    },
+    "emotions": {
+      "naming": [
+        "EMO_<Name>",
+        "Emotion_<Name>",
+        "Expr_<Name>",
+        "emotion:<name>"
+      ],
+      "families": {
+        "Fear": [
+          "nervous",
+          "anxious",
+          "scared"
+        ],
+        "Love": [
+          "flirty",
+          "affectionate"
+        ],
+        "Disgust": [
+          "repulsed"
+        ]
+      },
+      "fallbackOrder": [
+        "own shape",
+        "same-family shape",
+        "recipe built from ARKit channels",
+        "nearest preset",
+        "neutral face"
+      ],
+      "guidance": "Name whole-face poses EMO_<AnyWord>. With ARKit or MetaHuman channels you need no EMO_ shapes at all."
+    },
+    "clips": {
+      "recommended": "<Emotion>_Idle / <Emotion>_Talking",
+      "alsoAccepted": [
+        "Idle_<Emotion>",
+        "<Emotion>_Talk",
+        "camelCase happyIdle",
+        "Blender 'Armature|Happy_Idle'",
+        "'emotion:<name>' and 'emotion=<name>:talk'",
+        "glTF animation extras {\"emotion\":\"smug\",\"kind\":\"talk\"}",
+        "a bare emotion word ('Smug')"
+      ],
+      "newEmotions": "Any word before _Idle/_Talking registers a new emotion",
+      "neverEmotions": [
+        "walk",
+        "wave",
+        "sit",
+        "run"
+      ]
+    },
+    "rig": {
+      "nonHumanoid": "No requirements. Bones named head, jaw|beak_lower|mandible, tail*, wing* and ear* get emote motion and beak lip-sync automatically."
+    },
+    "gallery": "Owners can edit any emotion live with the Expressions button in the talk view."
+  }
+}

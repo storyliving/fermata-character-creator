@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fermata Character Import"
+  short_description: "Check, fix and upload your own 3D character into Love Bird"
+  default_prompt: "Fetch the live Fermata import spec, check my character file, and walk me through getting it into Love Bird at build.lovebird.show."

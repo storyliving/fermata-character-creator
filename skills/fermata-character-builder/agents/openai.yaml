@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fermata Character Builder"
+  short_description: "Build expressive, game-ready characters from a reference image by taking it apart, generating the parts in Tripo, and reassembling them"
+  default_prompt: "Help me turn my character idea into a game-ready 3D character: split the reference into parts, generate them in Tripo, reassemble in Blender, and give it blinks, a mouth and emotions."

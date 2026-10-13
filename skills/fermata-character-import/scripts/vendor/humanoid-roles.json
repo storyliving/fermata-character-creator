@@ -1,0 +1,382 @@
+{
+  "schema": "fermata-humanoid-roles/1",
+  "roles": [
+    "pelvis",
+    "spine_lo",
+    "spine_mid",
+    "spine_hi",
+    "neck",
+    "head",
+    "clavicle_l",
+    "upperarm_l",
+    "lowerarm_l",
+    "hand_l",
+    "clavicle_r",
+    "upperarm_r",
+    "lowerarm_r",
+    "hand_r",
+    "thigh_l",
+    "calf_l",
+    "foot_l",
+    "toe_l",
+    "thigh_r",
+    "calf_r",
+    "foot_r",
+    "toe_r"
+  ],
+  "requiredRoles": [
+    "pelvis",
+    "head",
+    "upperarm_l",
+    "lowerarm_l",
+    "hand_l",
+    "upperarm_r",
+    "lowerarm_r",
+    "hand_r",
+    "thigh_l",
+    "calf_l",
+    "foot_l",
+    "thigh_r",
+    "calf_r",
+    "foot_r"
+  ],
+  "confidence": {
+    "formula": "sum(weight * roleConfidence over mapped roles) / sum(weight over all 22 roles)",
+    "weightRequired": 1.0,
+    "weightOptional": 0.3,
+    "allRequired": "every requiredRole is mapped"
+  },
+  "tokenize": {
+    "stripNamespace": "keep only the text after the LAST ':' and then after the LAST '|'",
+    "splitOn": "any non-alphanumeric character",
+    "splitCamelCase": "split between a lowercase letter followed by an uppercase letter",
+    "splitDigits": "split wherever a digit meets a non-digit",
+    "lowercase": true,
+    "examples": {
+      "mixamorig:LeftUpLeg": [
+        "left",
+        "up",
+        "leg"
+      ],
+      "upperarm_l": [
+        "upperarm",
+        "l"
+      ],
+      "J_Bip_L_UpperArm": [
+        "j",
+        "bip",
+        "l",
+        "upper",
+        "arm"
+      ],
+      "Bip001 L Thigh": [
+        "bip",
+        "001",
+        "l",
+        "thigh"
+      ],
+      "DEF-upper_arm.L": [
+        "def",
+        "upper",
+        "arm",
+        "l"
+      ]
+    }
+  },
+  "excludedTokens": [
+    "twist",
+    "roll",
+    "corrective",
+    "corr",
+    "ik",
+    "pole",
+    "target",
+    "end",
+    "nub",
+    "tip",
+    "top",
+    "jaw",
+    "eye",
+    "eyes",
+    "eyelid",
+    "lid",
+    "brow",
+    "teeth",
+    "tongue",
+    "hair",
+    "thumb",
+    "index",
+    "middle",
+    "ring",
+    "pinky",
+    "pinkie",
+    "little",
+    "metacarpal",
+    "cloth",
+    "skirt",
+    "tail",
+    "wing",
+    "ear",
+    "lip",
+    "cheek",
+    "nose",
+    "helper",
+    "proxy",
+    "twistjoint",
+    "space"
+  ],
+  "excludedRule": "a bone whose token list CONTAINS any excluded token (exact token match) is never a candidate",
+  "side": {
+    "left": [
+      "l",
+      "left"
+    ],
+    "right": [
+      "r",
+      "right"
+    ],
+    "rule": "exact token match; left is tested first. Sided parts (clavicle, upperarm, lowerarm, hand, thigh, calf, foot, toe) with no side are dropped. Unsided parts (pelvis, spine, neck, head) ignore side."
+  },
+  "partRules": [
+    {
+      "part": "clavicle",
+      "conf": 1.0,
+      "anyToken": [
+        "clavicle",
+        "shoulder",
+        "collar",
+        "collarbone",
+        "clav"
+      ]
+    },
+    {
+      "part": "lowerarm",
+      "conf": 1.0,
+      "anyToken": [
+        "forearm",
+        "lowerarm",
+        "elbow"
+      ],
+      "allTokensAny": [
+        [
+          "fore",
+          "arm"
+        ],
+        [
+          "lower",
+          "arm"
+        ]
+      ]
+    },
+    {
+      "part": "upperarm",
+      "conf": 1.0,
+      "anyToken": [
+        "upperarm",
+        "uparm"
+      ],
+      "allTokensAny": [
+        [
+          "upper",
+          "arm"
+        ],
+        [
+          "up",
+          "arm"
+        ]
+      ]
+    },
+    {
+      "part": "upperarm",
+      "conf": 0.9,
+      "allTokens": [
+        "arm"
+      ],
+      "noneTokens": [
+        "hand",
+        "wrist"
+      ],
+      "why": "plain Arm (Mixamo/RPM naming)"
+    },
+    {
+      "part": "hand",
+      "conf": 1.0,
+      "anyToken": [
+        "hand",
+        "wrist"
+      ]
+    },
+    {
+      "part": "thigh",
+      "conf": 1.0,
+      "anyToken": [
+        "thigh",
+        "upleg",
+        "upperleg"
+      ],
+      "allTokensAny": [
+        [
+          "upper",
+          "leg"
+        ],
+        [
+          "up",
+          "leg"
+        ]
+      ]
+    },
+    {
+      "part": "calf",
+      "conf": 1.0,
+      "anyToken": [
+        "calf",
+        "shin",
+        "lowerleg",
+        "knee"
+      ],
+      "allTokensAny": [
+        [
+          "lower",
+          "leg"
+        ]
+      ]
+    },
+    {
+      "part": "calf",
+      "conf": 0.9,
+      "allTokens": [
+        "leg"
+      ],
+      "why": "plain Leg (Mixamo/RPM naming)"
+    },
+    {
+      "part": "foot",
+      "conf": 1.0,
+      "anyToken": [
+        "foot",
+        "ankle"
+      ]
+    },
+    {
+      "part": "toe",
+      "conf": 1.0,
+      "anyToken": [
+        "toe",
+        "toes",
+        "toebase",
+        "ball"
+      ]
+    },
+    {
+      "part": "pelvis",
+      "conf": 1.0,
+      "anyToken": [
+        "pelvis",
+        "hips",
+        "hip"
+      ]
+    },
+    {
+      "part": "neck",
+      "conf": 1.0,
+      "anyToken": [
+        "neck"
+      ]
+    },
+    {
+      "part": "head",
+      "conf": 1.0,
+      "anyToken": [
+        "head"
+      ]
+    },
+    {
+      "part": "spine",
+      "conf": 1.0,
+      "anyToken": [
+        "spine",
+        "abdomen",
+        "torso",
+        "waist"
+      ],
+      "anyTokenStartsWith": [
+        "chest",
+        "upperchest"
+      ]
+    }
+  ],
+  "partRuleMatch": "a rule matches if ANY of: some token in anyToken; some group in allTokensAny fully present; some token startsWith an anyTokenStartsWith prefix; OR (allTokens all present AND no noneTokens present). anyToken/allTokensAny/anyTokenStartsWith and allTokens are alternatives inside one rule.",
+  "assignment": {
+    "depth": "number of ancestors of the bone (root = 0)",
+    "sidedAndNeckHead": "for each role, among its candidates pick the SHALLOWEST (smallest depth); ties keep the first in bone order. Role confidence = that candidate's rule conf (neck/head use 1.0).",
+    "pelvis": "among pelvis candidates, pick the DEEPEST one that is an ancestor of BOTH a left-thigh candidate and a right-thigh candidate; if none qualifies, the shallowest pelvis candidate. Confidence 1.0.",
+    "spine": "spine candidates that are descendants of the pelvis (if mapped) AND ancestors of the neck (or of the head if no neck), sorted by depth. n=1 -> spine_mid; n>=2 -> spine_lo = first, spine_hi = last; n>=3 also spine_mid = chain[floor(n/2)]. Confidence 1.0.",
+    "hierarchySanity": "after assignment, if pelvis is mapped then thigh_l, thigh_r, head, upperarm_l, upperarm_r must each be DESCENDANTS of the pelvis; any that is not is unmapped. Then confidence is recomputed.",
+    "method": "'dictionary' if at least one role mapped, else 'none'"
+  },
+  "conventions": {
+    "rule": "evaluated over all lowercased bone names; first true flag in this order wins",
+    "order": [
+      {
+        "convention": "mixamo",
+        "test": "any name contains 'mixamorig'"
+      },
+      {
+        "convention": "vrm/vroid",
+        "test": "any name contains 'j_bip'"
+      },
+      {
+        "convention": "cc/iclone",
+        "test": "any name contains 'cc_base'"
+      },
+      {
+        "convention": "rigify",
+        "test": "any name starts with 'def-', 'org-' or 'def_'"
+      },
+      {
+        "convention": "3dsmax-biped",
+        "test": "any name contains 'bip001'"
+      },
+      {
+        "convention": "metahuman/mannequin",
+        "test": "any name equals 'upperarm_l' or 'thigh_l'"
+      },
+      {
+        "convention": "unity-humanoid",
+        "test": "any name contains 'upperleg' AND starts with 'left' or 'right'"
+      },
+      {
+        "convention": "mixamo-like (rpm/meshy/tripo)",
+        "test": "any name contains 'upleg'"
+      },
+      {
+        "convention": "generic",
+        "test": "otherwise"
+      }
+    ],
+    "informational": "the convention label is metadata only; it never gates acceptance"
+  },
+  "topologyFallback": {
+    "enabledByDefault": false,
+    "rule": "used only when the dictionary result lacks a required role or has confidence < 0.80; minimum 15 bones; role confidences 0.6-0.7 and overall confidence capped at 0.80. Not exported in detail: OFF until it passes its test matrix. A web importer must treat topology-only rigs as NOT supported humanoids."
+  },
+  "acceptance": {
+    "supportedHumanoid": "method == 'dictionary' AND allRequired AND confidence >= 0.80",
+    "minConfidence": 0.8,
+    "onAccept": "inherits ALL official Fermata body animations through the runtime retarget (UFermataBodyRetargetComponent); NO embedded clip required",
+    "onReject": "not a supported humanoid: the upload must bring its own embedded animation clip(s); without one it is rejected"
+  },
+  "measuredLimits": {
+    "legLengthRatio": {
+      "clean": [
+        0.9,
+        1.3
+      ],
+      "usable": [
+        0.75,
+        1.3
+      ]
+    }
+  },
+  "note": "Role vocabulary and naming tokens used by the importer to recognise a humanoid skeleton."
+}
